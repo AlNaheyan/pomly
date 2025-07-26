@@ -61,16 +61,23 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user && nonAuthPath.some((e) => request.nextUrl.pathname.startsWith(e)))
+  const pathname  = request.nextUrl.pathname;
+
+  // allow non-authenticated users to access auth pages (login, register, etc.)
+  if (!user && nonAuthPath.some((e) => pathname.startsWith(e)))
     return response;
 
-  if (user && nonAuthPath.some((e) => request.nextUrl.pathname.startsWith(e)))
+  // redirect authenticated users away from auth pages to dashboard
+  if (user && nonAuthPath.some((e) => pathname.startsWith(e)))
     return NextResponse.redirect(new URL("/", request.url));
 
-  if (
-    !user &&
-    protectedRoutes.some((e) => request.nextUrl.pathname.startsWith(e))
-  ) {
+  // redirect authenticated users from landing page to dashboard
+  // if (user && pathname === "/") {
+  //   return NextResponse.redirect(new URL("/dashboard", request.url));
+  // }
+
+  // redirect non-auth users from protected route to login
+  if ( !user && protectedRoutes.some((e) => pathname.startsWith(e))) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 

@@ -1,6 +1,4 @@
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Lock } from "lucide-react";
 import Link from "next/link";
 import BentoGridSection from "./_components/bento-grid-section";
 
@@ -8,19 +6,14 @@ const HomePage = () => {
   return (
     <div>
       <section className="grid place-content-center place-items-center gap-6 text-center">
-        <Badge size="sm">
-          Minimal Template with <Lock className="ml-1 w-4 h-4" />
-        </Badge>
 
         <h1 className="max-w-6xl">
-          Next.js 14 Supabase Authentication Playground: Building Modern Web
-          Experiences Together
+        Focus Together,
+        Achieve More
         </h1>
 
         <p className="max-w-3xl">
-          Explore the World of Open Source Coding and Secure Web Development.
-          Every Line of Code is Open Source - Contribute to the Future of Web
-          Development with Supabase Authentication!
+        Join synchronized study rooms with voice chat and Pomodoro timers. Stay motivated with fellow learners in real-time audio study sessions!
         </p>
 
         <div className="flex items-center gap-3">
@@ -29,7 +22,7 @@ const HomePage = () => {
           </Button>
 
           <Button variant="outline" className="rounded-full">
-            <a href="https://github.com/SarathAdhi/next-supabase-auth">
+            <a href="https://github.com/AlNaheyan/study-sprint" target="_blank">
               GitHub
             </a>
           </Button>

@@ -12,10 +12,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { createClient } from "@/utils/supabase/server";
-import { Lock, User } from "lucide-react";
+import { BookAudio, BookUser } from "lucide-react";
 
 const Navbar = async () => {
-  const supabase = createClient();
+  const supabase = await createClient();
 
   const {
     data: { user },
@@ -25,8 +25,8 @@ const Navbar = async () => {
     <header className="w-full">
       <div className="container p-4 sm:px-6 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2">
-          <Lock />
-          <h5 className="mt-0.5">Next Level Auth</h5>
+          <BookAudio />
+          <h5 className="mt-0.5">Pomly</h5>
         </Link>
 
         <div className="flex items-center gap-3">
@@ -35,7 +35,7 @@ const Navbar = async () => {
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button size="icon" variant="ghost">
-                    <User />
+                    <BookUser />
                   </Button>
                 </DropdownMenuTrigger>
 

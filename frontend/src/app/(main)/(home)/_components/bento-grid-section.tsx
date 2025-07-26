@@ -1,42 +1,42 @@
 import { BentoCard, BentoGrid } from "@/components/ui/bento-grid";
-import { Code2, Component, LockKeyhole, Palette } from "lucide-react";
+import { LockKeyhole, Timer, Headset, Component } from "lucide-react";
 
 const features = [
   {
-    Icon: Component,
-    name: "Server Components",
+    Icon: LockKeyhole,
+    name: "Authentication System",
     description:
-      "Utilize the power of server components for seamless rendering and improved performance.",
-    href: "https://nextjs.org/docs/app/building-your-application/rendering/server-components",
+      "Secure login and registration using JWT, bcrypt, and Supabase. Set up protected routes and manage user sessions.",
+    href: "https://supabase.com/docs/guides/auth/jwts",
     cta: "Learn more",
     className: "col-span-3 lg:col-span-1",
     background: <div />,
   },
   {
-    Icon: LockKeyhole,
-    name: "Authentication",
+    Icon: Headset,
+    name: "Real-Time Study Rooms",
     description:
-      "Secure your application with the robust authentication provided using Supabase Auth.",
-    href: "https://supabase.com/docs/guides/auth/server-side/nextjs",
+      "Create or join virtual rooms using a 5-digit code. Rooms support up to 10 participants with audio and timer sync.",
+    href: "#",
     cta: "Learn more",
     className: "col-span-3 lg:col-span-2",
     background: <div />,
   },
   {
-    Icon: Code2,
-    name: "Open Source",
+    Icon: Timer,
+    name: "Synced Pomodoro Timer",
     description:
-      "Join hands with developers worldwide to enhance and innovate, making a lasting impact on the project.",
-    href: "https://opensource.guide/",
+      "Host-controlled Pomodoro sessions broadcast in real-time with automatic transitions and session persistence.",
+    href: "https://en.wikipedia.org/wiki/Pomodoro_Technique",
     cta: "Learn more",
     className: "col-span-3 lg:col-span-2",
     background: <div />,
   },
   {
-    Icon: Palette,
-    name: "Modern UI",
+    Icon: Component,
+    name: "Advanced Features",
     description:
-      "Craft stunning and responsive user interfaces with the latest design principles and practices.",
+      "Push notifications, avatars, room invites, session history, and customizable Pomodoro templates for future growth.",
     className: "col-span-3 lg:col-span-1",
     href: "#",
     cta: "Learn more",
