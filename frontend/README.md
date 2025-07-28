@@ -1,4 +1,4 @@
-Study Sprint Frontend
+Pomly Frontend
 
 # Stack
 

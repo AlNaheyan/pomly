@@ -23,22 +23,21 @@ export const metadata: Metadata = {
   },
   description: siteConfig.description,
   keywords: [
-    "Next.js",
-    "Nextjs 14",
-    "React",
-    "Tailwind CSS",
-    "Server Components",
-    "Radix UI",
-    "Shadcn UI",
-    "Basic Nextjs template",
+    "Pomodoro",
+    "Study",
+    "Rooms",
+    "Study Rooms",
+    "Timer",
+    "Pomodoro Timer",
+    "Group Study",
   ],
   authors: [
     {
-      name: "Sarath Adhithya",
-      url: "https://sarathadhi.com",
+      name: "Al Naheyan",
+      url: "https://alnaheyan.github.io/Portfolio/",
     },
   ],
-  creator: "Sarath Adhithya",
+  creator: "Al Naheyan",
   metadataBase: new URL(siteConfig.url),
   openGraph: {
     type: "website",
@@ -47,14 +46,12 @@ export const metadata: Metadata = {
     title: siteConfig.name,
     description: siteConfig.description,
     siteName: siteConfig.name,
-    images: siteConfig.ogImage,
   },
   twitter: {
     card: "summary_large_image",
     title: siteConfig.name,
     description: siteConfig.description,
-    images: [siteConfig.ogImage],
-    creator: "@AdhithyaSarath",
+    creator: "@0a1n1",
   },
   icons: {
     icon: "/favicon.ico",
@@ -89,7 +86,7 @@ export default function RootLayout({
           {children}
         </ThemeProvider>
 
-        <Toaster position="top-center" reverseOrder={false} />
+        <Toaster position="bottom-right" reverseOrder={false} />
       </body>
     </html>
   );

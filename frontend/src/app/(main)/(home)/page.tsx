@@ -6,13 +6,10 @@ const HomePage = () => {
   return (
     <div>
       <section className="grid place-content-center place-items-center gap-6 text-center">
-
-        <h1 className="max-w-6xl">
-        Focus Together,
-        Achieve More
-        </h1>
-
-        <p className="max-w-3xl">
+        <span className="mt-10 pointer-events-none whitespace-pre-wrap bg-gradient-to-b from-black to-gray-300/80 bg-clip-text text-center text-9xl font-bold leading-none text-transparent dark:from-white dark:to-slate-700 pb-3">
+          Pomly
+        </span>
+        <p className="max-w-3xl text-xl">
         Join synchronized study rooms with voice chat and Pomodoro timers. Stay motivated with fellow learners in real-time audio study sessions!
         </p>
 
@@ -22,7 +19,7 @@ const HomePage = () => {
           </Button>
 
           <Button variant="outline" className="rounded-full">
-            <a href="https://github.com/AlNaheyan/study-sprint" target="_blank">
+            <a href="https://github.com/AlNaheyan/pomly" target="_blank">
               GitHub
             </a>
           </Button>

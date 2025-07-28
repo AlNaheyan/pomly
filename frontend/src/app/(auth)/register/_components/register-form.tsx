@@ -11,6 +11,9 @@ import toast from "react-hot-toast";
 import { z } from "zod";
 
 export const registerFormSchema = z.object({
+  name: z.string().min(3, {
+    message: "Name must be at least 3 Characters.",
+  }),
   email: z.string().email(),
   password: z.string().min(8, {
     message: "Password must be at least 8 characters.",
@@ -20,6 +23,7 @@ export const registerFormSchema = z.object({
 type RegisterValuesType = z.infer<typeof registerFormSchema>;
 
 const defaultValues: RegisterValuesType = {
+  name: "",
   email: "",
   password: "",
 };
@@ -36,9 +40,13 @@ const RegisterForm = () => {
 
   async function handleRegister(values: RegisterValuesType) {
     const { error, data } = await supabase.auth.signUp({
-      ...values,
+      email: values.email,
+      password: values.password,
       options: {
         emailRedirectTo: `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/callback`,
+        data: {
+          name: values.name,
+        }
       },
     });
 
@@ -58,9 +66,17 @@ const RegisterForm = () => {
         className="w-full flex flex-col gap-y-4"
       >
         <InputForm
+          label="Name"
+          name="name"
+          placeholder="John Doe"
+          description=""
+          required
+        />
+
+        <InputForm
           label="Email"
           name="email"
-          placeholder="hello@sarathadhi.com"
+          placeholder="hello@pomly.com"
           description=""
           required
         />

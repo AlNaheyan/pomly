@@ -10,6 +10,9 @@ const ProfilePage = async () => {
   return (
     <div className="space-y-3">
       <h3>Profile Page</h3>
+      <p>
+        <strong>Name:</strong> {user?.user_metadata?.name || 'Not provided'}
+      </p>
 
       <p>
         <strong>Email:</strong> {user?.email}

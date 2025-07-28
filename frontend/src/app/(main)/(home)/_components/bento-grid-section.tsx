@@ -19,7 +19,7 @@ const features = [
       "Create or join virtual rooms using a 5-digit code. Rooms support up to 10 participants with audio and timer sync.",
     href: "#",
     cta: "Learn more",
-    className: "col-span-3 lg:col-span-2",
+    className: "col-span-2 lg:col-span-2",
     background: <div />,
   },
   {
