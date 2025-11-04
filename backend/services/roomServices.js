@@ -52,6 +52,11 @@ const joinRoom = (roomId, userId) => {
         return null
     }
 
+    // User already in room - return current state
+    if (room.participants.has(userId)) {
+        return room;
+    }
+
     if (room.participants.size >= room.max_participants) {
         return {error: 'Room is full'};
     }
@@ -111,12 +116,13 @@ const updateParticipantsMute = (roomId, userId, isMuted) => {
     if (!room) return null
 
     const participant = room.participants.get(userId)
-    if (participant) {
-        participant.is_muted = isMuted;
-        return participant
-    }
+    if (!participant) return null
 
-    return null
+    const nextMuted =
+        typeof isMuted === 'boolean' ? isMuted : !participant.is_muted
+
+    participant.is_muted = nextMuted
+    return participant
 };
 
 const getActiveRoomCounts = () => {
@@ -132,4 +138,3 @@ module.exports = {
     updateParticipantsMute,
     getActiveRoomCounts
 }
-

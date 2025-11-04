@@ -28,7 +28,7 @@ const setupRoomHandlers = (io, socket) => {
                 room_code: room.room_code,
                 name: room.name,
                 description: room.description,
-                participants: room.participants,
+                participants: room.participants.size,
                 max_participants: room.max_participants,
                 is_timer_active: room.timer.is_active,
                 host_name: 'Host'
@@ -58,7 +58,7 @@ const setupRoomHandlers = (io, socket) => {
             ...result,
             participants: Array.from(result.participants.values())
         };
-        callback({success: true, roomId: roomResponse});
+        callback({success: true, room: roomResponse});
 
         socket.to(roomId).emit('user-joined', {
             userId: socket.userId,
@@ -82,7 +82,20 @@ const setupRoomHandlers = (io, socket) => {
     });
 
     // audi control event
-    socket.on('toggle-mute', (callback) => {
+    socket.on('toggle-mute', (payload, maybeCallback) => {
+        let callback = maybeCallback;
+        let desiredMute = undefined;
+
+        if (typeof payload === 'function') {
+            callback = payload;
+        } else if (payload && typeof payload === 'object') {
+            desiredMute = payload.isMuted;
+        }
+
+        if (typeof callback !== 'function') {
+            callback = () => {};
+        }
+
         if (!socket.currentRoom) {
             return callback({ success: false, error: "not in a room"});
         }
@@ -90,7 +103,7 @@ const setupRoomHandlers = (io, socket) => {
         const participant = updateParticipantsMute(
             socket.currentRoom,
             socket.userId,
-            null // will toggle the current state
+            desiredMute
         );
 
         if (!participant) {
@@ -113,7 +126,7 @@ const setupRoomHandlers = (io, socket) => {
 
             socket.to(socket.currentRoom).emit('user-left', {
                 userId: socket.userId,
-                participant: room ? Array.from(room.participant.values()): []
+                participants: room ? Array.from(room.participants.values()): []
             });
         }
     };
