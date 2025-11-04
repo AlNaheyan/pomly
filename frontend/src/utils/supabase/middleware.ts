@@ -69,7 +69,7 @@ export async function updateSession(request: NextRequest) {
 
   // redirect authenticated users away from auth pages to dashboard
   if (user && nonAuthPath.some((e) => pathname.startsWith(e)))
-    return NextResponse.redirect(new URL("/", request.url));
+    return NextResponse.redirect(new URL("/rooms", request.url));
 
   // redirect authenticated users from landing page to dashboard
   // if (user && pathname === "/") {

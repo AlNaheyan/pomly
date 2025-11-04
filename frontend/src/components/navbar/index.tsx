@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import Image from "next/image"
 import { ModeToggle } from "./mode-toggle"
 import { signOut } from "@/app/actions"
 import {
@@ -35,7 +36,14 @@ const Navbar = async () => {
     <header className="w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10">
       <div className="container p-4 sm:px-6 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
-          <img src="/nav-icon.png" alt="Pomly Logo" className="h-6 w-6" />
+          <Image
+            src="/nav-icon.png"
+            alt="Pomly Logo"
+            width={24}
+            height={24}
+            className="h-6 w-6"
+            priority
+          />
         </Link>
 
         <div className="flex items-center gap-3">

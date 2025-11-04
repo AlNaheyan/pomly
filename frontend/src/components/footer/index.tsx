@@ -11,7 +11,7 @@ const Footer = () => {
         <p className="text-sm">
           Build by{" "}
           <a
-            href="https://alnaheyan.github.io/Portfolio//"
+            href="https://alnaheyan.me"
             target="_blank"
             className="underline"
           >

@@ -41,7 +41,7 @@ const LoginForm = () => {
 
     toast.success("Login successful");
 
-    router.refresh();
+    router.push("/rooms");
   }
 
   return (

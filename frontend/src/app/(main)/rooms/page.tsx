@@ -1,117 +1,190 @@
 "use client";
 
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
+import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
-import { CreateRoomDialog } from "./_components/create-form";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 import { Clock, Users } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-
-
-const mockRooms = [
-    {
-        id: "1",
-        room_code: "ABC123",
-        name: "Study Session #1",
-        description: "Focused study for finals",
-        participants: 3,
-        max_participants: 8,
-        is_timer_active: true,
-        host_name: "John Doe",
-    },
-    {
-        id: "2",
-        room_code: "DEF456",
-        name: "Math Group Study",
-        description: "Working on calculus problems",
-        participants: 5,
-        max_participants: 10,
-        is_timer_active: false,
-        host_name: "Jane Smith",
-    },
-];
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { CreateRoomDialog } from "./_components/create-form";
+import type { RoomSummary } from "@/types/rooms";
+import { useSocketContext } from "@/providers/socket-provider";
 
 export default function RoomPage() {
-    const [rooms, setRooms] = useState(mockRooms);
+  const router = useRouter();
+  const [rooms, setRooms] = useState<RoomSummary[]>([]);
+  const [isLoadingRooms, setIsLoadingRooms] = useState(true);
+  const { socket, hasSession, isConnecting: isConnectingSocket } =
+    useSocketContext();
 
-    return (
-        <div className="container mx-auto p-6 max-w-6xl">
-            <div className="flex justify-between items-center mb-8">
-                <div>
-                    <h1 className="text-3xl font-bold">Study Rooms</h1>
-                    <p className="text-muted-foreground mt-2">
-                        Join active study sessions or create your own
-                    </p>
-                </div>
+  const fetchRooms = useCallback(async () => {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_BACKEND_URL?.replace(/\/$/, "") ??
+      "http://localhost:3001";
+    try {
+      const response = await fetch(`${baseUrl}/api/rooms`, {
+        credentials: "include",
+      });
+      if (!response.ok) {
+        throw new Error("Failed to load rooms");
+      }
+      const data: RoomSummary[] = await response.json();
+      setRooms(data);
+    } catch (error) {
+      console.error(error);
+      toast.error("Could not load study rooms. Please try again.");
+    } finally {
+      setIsLoadingRooms(false);
+    }
+  }, []);
 
-                <CreateRoomDialog />
-            </div>
+  useEffect(() => {
+    fetchRooms();
+  }, [fetchRooms]);
 
-            {rooms.length === 0 ? (
-                <div className="text-center py-12">
-                    <h2 className="text-xl font-semibold mb-2">
-                        No active rooms
-                    </h2>
-                    <p className="text-muted-foreground mb-4">
-                        Be the first to create a study room!
-                    </p>
-                    <CreateRoomDialog />
-                </div>
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {rooms.map((room) => (
-                        <Card
-                            key={room.id}
-                            className="hover:shadow-md transition-shadow"
-                        >
-                            <CardHeader>
-                                <div className="flex justify-between items-start">
-                                    <div>
-                                        <CardTitle className="text-lg">
-                                            {room.name}
-                                        </CardTitle>
-                                        <CardDescription className="mt-1">
-                                            Code:{" "}
-                                            <span className="font-mono font-semibold">
-                                                {room.room_code}
-                                            </span>
-                                        </CardDescription>
-                                    </div>
-                                    {room.is_timer_active && (
-                                        <Badge variant="secondary">
-                                            <Clock className="w-3 h-3 mr-1" />
-                                            Active
-                                        </Badge>
-                                    )}
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-sm text-muted-foreground mb-4">
-                                    {room.description || "No description"}
-                                </p>
+  useEffect(() => {
+    if (!socket) {
+      return;
+    }
 
-                                <div className="flex items-center justify-between mb-4">
-                                    <div className="flex items-center text-sm text-muted-foreground">
-                                        <Users className="w-4 h-4 mr-1" />
-                                        {room.participants}/
-                                        {room.max_participants}
-                                    </div>
-                                    <span className="text-sm text-muted-foreground">
-                                        Host: {room.host_name}
-                                    </span>
-                                </div>
+    const handleRoomUpdate = () => {
+      fetchRooms();
+    };
 
-                                <Link href={`/rooms/${room.id}`}>
-                                    <Button className="w-full">
-                                        Join Room
-                                    </Button>
-                                </Link>
-                            </CardContent>
-                        </Card>
-                    ))}
-                </div>
-            )}
+    socket.on("room-created", handleRoomUpdate);
+    socket.on("user-joined", handleRoomUpdate);
+    socket.on("user-left", handleRoomUpdate);
+
+    return () => {
+      socket.off("room-created", handleRoomUpdate);
+      socket.off("user-joined", handleRoomUpdate);
+      socket.off("user-left", handleRoomUpdate);
+    };
+  }, [fetchRooms, socket]);
+
+  const handleJoinRoom = useCallback(
+    (roomId: string) => {
+      if (!socket) {
+        toast.error("Please sign in to join a room.");
+        router.push("/login");
+        return;
+      }
+
+      router.push(`/rooms/${roomId}`);
+    },
+    [router, socket]
+  );
+
+  return (
+    <div className="container mx-auto p-6 max-w-6xl">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8">
+        <div>
+          <h1 className="text-3xl font-bold">Study Rooms</h1>
+          <p className="text-muted-foreground mt-2">
+            Join active study sessions or create your own.
+          </p>
         </div>
-    );
+
+        <CreateRoomDialog
+          socket={socket}
+          onCreated={(roomId) => {
+            fetchRooms();
+            router.push(`/rooms/${roomId}`);
+          }}
+          disabled={!hasSession || isConnectingSocket}
+        />
+      </div>
+
+      {!hasSession && (
+        <div className="mb-6 rounded-lg border bg-muted/30 p-4 text-sm text-muted-foreground">
+          Sign in to create or join rooms. You can still browse active rooms
+          below.
+        </div>
+      )}
+
+      {isLoadingRooms ? (
+        <div className="py-12 text-center text-muted-foreground">
+          Loading rooms...
+        </div>
+      ) : rooms.length === 0 ? (
+        <div className="text-center py-12">
+          <h2 className="text-xl font-semibold mb-2">No active rooms</h2>
+          <p className="text-muted-foreground mb-4">
+            Be the first to create a study room!
+          </p>
+          <CreateRoomDialog
+            socket={socket}
+            disabled={!hasSession || isConnectingSocket}
+            onCreated={(roomId) => {
+              fetchRooms();
+              router.push(`/rooms/${roomId}`);
+            }}
+          />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {rooms.map((room) => (
+            <Card key={room.id} className="transition-shadow hover:shadow-md">
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <CardTitle className="text-lg">{room.name}</CardTitle>
+                    <CardDescription className="mt-1">
+                      Code:{" "}
+                      <span className="font-mono font-semibold">
+                        {room.room_code}
+                      </span>
+                    </CardDescription>
+                  </div>
+                  {room.is_timer_active && (
+                    <Badge variant="secondary">
+                      <Clock className="mr-1 h-3 w-3" />
+                      Active
+                    </Badge>
+                  )}
+                </div>
+              </CardHeader>
+              <CardContent>
+                <p className="mb-4 text-sm text-muted-foreground">
+                  {room.description || "No description"}
+                </p>
+
+                <div className="mb-4 flex items-center justify-between text-sm text-muted-foreground">
+                  <span className="flex items-center gap-1">
+                    <Users className="h-4 w-4" />
+                    {room.participants}/{room.max_participants}
+                  </span>
+                  <span>Host: {room.host_name}</span>
+                </div>
+
+                <Button
+                  className="w-full"
+                  onClick={() => handleJoinRoom(room.id)}
+                  disabled={!hasSession || isConnectingSocket}
+                >
+                  Join Room
+                </Button>
+                <Button
+                  className="mt-2 w-full"
+                  variant="outline"
+                  asChild
+                >
+                  <Link href={`/rooms/${room.id}`}>View Details</Link>
+                </Button>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }

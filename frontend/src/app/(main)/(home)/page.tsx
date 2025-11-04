@@ -32,24 +32,6 @@ const HomePage = () => {
         <BentoGridSection />
       </section>
 
-      <section className="space-y-6 text-center">
-        <h2>Completely Open Source</h2>
-
-        <p className="mx-auto max-w-2xl">
-          The code for this project is completely open source and available on
-          GitHub. Join the community and contribute to the future of web
-          development!
-        </p>
-
-        <Button size="sm" asChild>
-          <a
-            href="https://github.com/SarathAdhi/next-supabase-auth"
-            target="_blank"
-          >
-            View on GitHub
-          </a>
-        </Button>
-      </section>
     </div>
   );
 };

@@ -1,4 +1,6 @@
 import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 const EmailSuccessPage = () => {
   return (
@@ -18,6 +20,10 @@ const EmailSuccessPage = () => {
           To confirm your email address, tap the link in the email we sent to
           you.
         </p>
+
+        <Button asChild variant="outline">
+          <Link href="/login">Back to Login</Link>
+        </Button>
       </div>
     </div>
   );
